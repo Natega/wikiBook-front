@@ -44,17 +44,15 @@ export default class ListBooks extends Vue {
   public books: any[] = [];
   public hasPanelAddedBook = false;
   public addBook(data: Record<string, string | number | string[]>) {
-    console.log(data);
-    Axios.post('http://localhost:8000/book', { ...data });
+    Axios.post(process.env.VUE_APP_BACK + '/book', { ...data });
   }
   public deleteBook(id: string) {
-    Axios.delete('http://localhost:8000/book', { data: { id } }).then(r => {
-      console.log(this.books.filter(el => el._id !== r.data.id));
+    Axios.delete(process.env.VUE_APP_BACK + '/book', { data: { id } }).then(r => {
       this.books = this.books.filter(el => el._id !== r.data.id);
     });
   }
   mounted() {
-    Axios.get('http://localhost:8000/book/all').then(r => {
+    Axios.get(process.env.VUE_APP_BACK + '/book/all').then(r => {
       this.books = r.data;
     });
   }

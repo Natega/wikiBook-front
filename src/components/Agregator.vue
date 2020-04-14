@@ -120,7 +120,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    axios.get('http://localhost:8000/book').then((response: any) => {
+    axios.get(process.env.VUE_APP_BACK + '/book').then((response: any) => {
       this.img = response.data.img;
       this.title = response.data.title;
       this.videos = response.data.videos;
