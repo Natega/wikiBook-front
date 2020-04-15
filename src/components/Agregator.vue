@@ -100,6 +100,7 @@ import FormBook from './FormBook.vue';
 import VideoFrame from './VideoFrame.vue';
 import PodcastFrame from './PodcastFrame.vue';
 import AddUrl from './AddUrl.vue';
+import config from '@/config';
 export default Vue.extend({
   components: {
     VideoFrame,
@@ -121,7 +122,7 @@ export default Vue.extend({
   },
   mounted() {
     axios
-      .get(process.env.VUE_APP_BACK + '/book/id/' + this.$route.params._id, {})
+      .get(config.back + '/book/id/' + this.$route.params._id, {})
       .then((response: any) => {
         this.img = response.data.img;
         this.title = response.data.title;

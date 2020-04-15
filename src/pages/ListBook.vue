@@ -21,16 +21,7 @@
       </v-col>
     </v-row>
     <div v-for="book in books" :key="book._id">
-      <v-card>
-        <v-card-title>{{ book.title || 'undefined' }}</v-card-title>
-        <v-card-text>{{ book._id }}</v-card-text>
-
-        <v-img class="white--text align-end" :src="book.img" width="200px"></v-img>
-        <v-card-actions>
-          <v-btn text @click="goToBook(book._id)">Explore</v-btn>
-          <v-btn text @click="deleteBook(book._id)">Delete</v-btn>
-        </v-card-actions>
-      </v-card>
+      <CardBook :book="book" :goToBook="goToBook" :deleteBook="deleteBook" />
     </div>
   </v-content>
 </template>
@@ -38,33 +29,36 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Axios from 'axios';
 import IBook from '@/types/IBook';
-import FormBook from '../components/FormBook.vue';
+import FormBook from '@/components/FormBook.vue';
+import CardBook from '@/components/CardBook.vue';
+
+import config from '@/config';
 @Component({
   components: {
     FormBook,
+    CardBook,
   },
 })
 export default class ListBooks extends Vue {
   public books: IBook[] = [];
   public hasPanelAddedBook = false;
   public addBook(data: IBook) {
-    alert('ddd');
-    Axios.post(process.env.VUE_APP_BACK + '/book', { ...data }).then(response => {
+    Axios.post(config.back + '/book', { ...data }).then(response => {
       this.books.push({ _id: response.data._id, ...data });
       this.hasPanelAddedBook = false;
     });
   }
   public goToBook(_id: string) {
-    this.$router.push({ name: 'BookById', params: { _id } });
+    this.$router.push({ name: 'BookById', params: { _id } }); //@TODO maybe use compose api or utils
   }
   public deleteBook(_id: string) {
-    Axios.delete(process.env.VUE_APP_BACK + '/book', { data: { _id } }).then(r => {
-      this.books = this.books.filter(el => el._id !== r.data._id);
+    Axios.delete(config.back + '/book', { data: { _id } }).then(response => {
+      this.books = this.books.filter(el => el._id !== response.data._id);
     });
   }
   mounted() {
-    Axios.get(process.env.VUE_APP_BACK + '/book/all').then(r => {
-      this.books = r.data;
+    Axios.get(config.back + '/book/all').then(response => {
+      this.books = response.data as IBook[];
     });
   }
 }
