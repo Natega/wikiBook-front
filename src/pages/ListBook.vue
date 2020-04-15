@@ -37,6 +37,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Axios from 'axios';
+import IBook from '@/types/IBook';
 import FormBook from '../components/FormBook.vue';
 @Component({
   components: {
@@ -44,20 +45,21 @@ import FormBook from '../components/FormBook.vue';
   },
 })
 export default class ListBooks extends Vue {
-  public books: any[] = [];
+  public books: IBook[] = [];
   public hasPanelAddedBook = false;
-  public addBook(data: Record<string, string | number | string[]>) {
+  public addBook(data: IBook) {
+    alert('ddd');
     Axios.post(process.env.VUE_APP_BACK + '/book', { ...data }).then(response => {
       this.books.push({ _id: response.data._id, ...data });
       this.hasPanelAddedBook = false;
     });
   }
-  public goToBook(id: string) {
-    this.$router.push({ name: 'BookById', params: { id } });
+  public goToBook(_id: string) {
+    this.$router.push({ name: 'BookById', params: { _id } });
   }
-  public deleteBook(id: string) {
-    Axios.delete(process.env.VUE_APP_BACK + '/book', { data: { id } }).then(r => {
-      this.books = this.books.filter(el => el._id !== r.data.id);
+  public deleteBook(_id: string) {
+    Axios.delete(process.env.VUE_APP_BACK + '/book', { data: { _id } }).then(r => {
+      this.books = this.books.filter(el => el._id !== r.data._id);
     });
   }
   mounted() {

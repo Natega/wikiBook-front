@@ -11,7 +11,7 @@ const routes: Array<RouteConfig> = [
     component: Home,
   },
   {
-    path: '/book/id/:id',
+    path: '/book/id/:_id',
     name: 'BookById',
     component: Home,
     // route level code-splitting

@@ -121,7 +121,7 @@ export default Vue.extend({
   },
   mounted() {
     axios
-      .get(process.env.VUE_APP_BACK + '/book/id/' + this.$route.params.id, {})
+      .get(process.env.VUE_APP_BACK + '/book/id/' + this.$route.params._id, {})
       .then((response: any) => {
         this.img = response.data.img;
         this.title = response.data.title;
