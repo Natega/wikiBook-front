@@ -18,11 +18,12 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component
 export default class FormBook extends Vue {
-  public myTitle?: string;
-  public myImg?: string;
-  public myAuthor?: string;
-  public mySubtitle?: string;
-  public myDescription?: string;
+  public myTitle?: string = '';
+  public myImg?: string = '';
+  public myAuthor?: string = '';
+  public mySubtitle?: string = '';
+  public myDescription?: string = '';
+  public mode = 'full';
   @Prop({ type: String, default: '' })
   title?: string;
   @Prop({ type: String, default: '' })

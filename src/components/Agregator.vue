@@ -120,13 +120,15 @@ export default Vue.extend({
     },
   },
   mounted() {
-    axios.get(process.env.VUE_APP_BACK + '/book').then((response: any) => {
-      this.img = response.data.img;
-      this.title = response.data.title;
-      this.videos = response.data.videos;
-      this.podcasts = response.data.podcasts;
-      this.author = response.data.author;
-    });
+    axios
+      .get(process.env.VUE_APP_BACK + '/book/id/' + this.$route.params.id, {})
+      .then((response: any) => {
+        this.img = response.data.img;
+        this.title = response.data.title;
+        this.videos = response.data.videos;
+        this.podcasts = response.data.podcasts;
+        this.author = response.data.author;
+      });
   },
   data(): {
     img: string;
