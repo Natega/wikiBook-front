@@ -1,9 +1,10 @@
 <template>
   <div>
-    <v-text-field v-model="myTitle" :value="title" label="Titre" />
-    <v-text-field v-model="myImg" :value="img" label="Image" />
-    <v-text-field v-model="myAuthor" :value="author" label="Auteur" />
-    <v-textarea v-model="mySubtitle" :value="subtitle" label="Sous-titre" maxlength="150" />
+    <span v-if="this._id">{{ this._id }}</span>
+    <v-text-field v-model="myTitle" label="Titre" />
+    <v-text-field v-model="myImg" label="Image" />
+    <v-text-field v-model="myAuthor" label="Auteur" />
+    <v-textarea v-model="mySubtitle" label="Sous-titre" maxlength="150" />
     <v-textarea
       v-model="myDescription"
       :value="description"
@@ -18,12 +19,8 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 @Component
 export default class FormBook extends Vue {
-  public myTitle?: string = '';
-  public myImg?: string = '';
-  public myAuthor?: string = '';
-  public mySubtitle?: string = '';
-  public myDescription?: string = '';
-  public mode = 'full';
+  @Prop({ type: String, default: '' })
+  _id?: string;
   @Prop({ type: String, default: '' })
   title?: string;
   @Prop({ type: String, default: '' })
@@ -36,6 +33,13 @@ export default class FormBook extends Vue {
   subtitle?: string;
   @Prop({ type: Function })
   action?: Function;
+
+  public myTitle?: string = this.title;
+  public myImg?: string = this.img;
+  public myAuthor?: string = this.author;
+  public mySubtitle?: string = this.subtitle;
+  public myDescription?: string = this.description;
+  public mode = 'full';
   public addBook() {
     if (this.action) {
       this.action({

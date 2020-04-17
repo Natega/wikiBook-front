@@ -31,7 +31,7 @@
                       </v-btn>
                     </center>
                   </div>
-                  <FormBook v-else :author="author" />
+                  <FormBook v-else :_id="_id" :title="title" :author="author" />
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -51,7 +51,7 @@
                   >
                     <v-icon dark>mdi-plus</v-icon>
                   </v-btn>
-                  <AddUrl v-else :callbackFn="callAddUrl" />
+                  <AddUrl v-else :callbackFn="callAddVideoUrl" />
                 </transition>
                 <div v-for="(video, index) in videos" :key="index">
                   <VideoFrame :url="video" />
@@ -74,7 +74,7 @@
                   >
                     <v-icon dark>mdi-plus</v-icon>
                   </v-btn>
-                  <AddUrl v-else :callbackFn="callAddUrl" />
+                  <AddUrl v-else :callbackFn="callAddPodcastUrl" />
                 </transition>
                 <div v-for="(podcast, index) in podcasts" :key="index">
                   <PodcastFrame :url="podcast" />
@@ -101,6 +101,7 @@ import VideoFrame from './VideoFrame.vue';
 import PodcastFrame from './PodcastFrame.vue';
 import AddUrl from './AddUrl.vue';
 import config from '@/config';
+import Axios from 'axios';
 export default Vue.extend({
   components: {
     VideoFrame,
@@ -115,9 +116,22 @@ export default Vue.extend({
     invertAddVideoUrl() {
       this.addVideoUrl = !this.addVideoUrl;
     },
-    callAddUrl: function(data: object) {
-      alert(data);
+    callAddVideoUrl: function(data: object) {
+      this.addVideoUrl = false;
+      Axios.patch(config.back + '/book/video/' + this.$route.params._id, data).then(
+        response => {
+          this.videos.push(response.data.url);
+        }
+      );
+    },
+    callAddPodcastUrl: function(data: object) {
       this.addPodcastUrl = false;
+      Axios.patch(
+        config.back + '/book/podcast/' + this.$route.params._id,
+        data
+      ).then(response => {
+        this.podcasts.push(response.data.url);
+      });
     },
   },
   mounted() {
@@ -132,6 +146,7 @@ export default Vue.extend({
       });
   },
   data(): {
+    _id: string;
     img: string;
     title: string;
     loading: boolean;
@@ -144,6 +159,8 @@ export default Vue.extend({
     editBook: boolean;
   } {
     return {
+      // eslint-disable-next-line vue/no-reserved-keys
+      _id: '',
       editBook: false,
       addVideoUrl: false,
       addPodcastUrl: false,
