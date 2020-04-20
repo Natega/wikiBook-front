@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 @Component
 export default class FormBook extends Vue {
   @Prop({ type: String, default: '' })
@@ -40,6 +40,7 @@ export default class FormBook extends Vue {
   public mySubtitle?: string = this.subtitle;
   public myDescription?: string = this.description;
   public mode = 'full';
+
   public addBook() {
     if (this.action) {
       this.action({

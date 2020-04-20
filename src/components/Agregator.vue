@@ -31,7 +31,7 @@
                       </v-btn>
                     </center>
                   </div>
-                  <FormBook v-else :_id="_id" :title="title" :author="author" />
+                  <FormBook v-else :title.sync="title" />
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -51,7 +51,7 @@
                   >
                     <v-icon dark>mdi-plus</v-icon>
                   </v-btn>
-                  <AddUrl v-else :callbackFn="callAddVideoUrl" />
+                  <AddUrl v-else :callbackFn="callAddVideoUrl" :rules="youtubeRules" />
                 </transition>
                 <div v-for="(video, index) in videos" :key="index">
                   <VideoFrame :url="video" />
@@ -85,11 +85,23 @@
         </v-expansion-panels>
       </v-col>
       <v-col :cols="10" md="4" sm="12">
-        <h2>Résumé</h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas maximus
-        odio sit amet leo iaculis, sed consectetur dolor congue. Aliquam lacinia urna
-        id neque
+        <article v-html="resumer"></article>
       </v-col>
-      <v-col :cols="10" md="4" sm="12"></v-col>
+      <v-col :cols="10" md="4" sm="12">
+        <center>
+          <v-btn
+            @click="invertEditResumer()"
+            class="mx-2 button-top"
+            fab
+            dark
+            color="indigo"
+            v-if="!editResumer"
+          >
+            <v-icon dark>mdi-plus</v-icon>
+          </v-btn>
+        </center>
+        <Swym v-if="editResumer" :resumer.sync="resumer" @swym="invertEditResumer" />
+      </v-col>
     </v-row>
   </v-content>
 </template>
@@ -99,6 +111,7 @@ import axios from 'axios';
 import FormBook from './FormBook.vue';
 import VideoFrame from './VideoFrame.vue';
 import PodcastFrame from './PodcastFrame.vue';
+import Swym from './Swym.vue';
 import AddUrl from './AddUrl.vue';
 import config from '@/config';
 import Axios from 'axios';
@@ -108,8 +121,12 @@ export default Vue.extend({
     AddUrl,
     PodcastFrame,
     FormBook,
+    Swym,
   },
   methods: {
+    invertEditResumer() {
+      this.editResumer = !this.editResumer;
+    },
     invertAddPodcastUrl() {
       this.addPodcastUrl = !this.addPodcastUrl;
     },
@@ -118,11 +135,14 @@ export default Vue.extend({
     },
     callAddVideoUrl: function(data: object) {
       this.addVideoUrl = false;
-      Axios.patch(config.back + '/book/video/' + this.$route.params._id, data).then(
-        response => {
+      Axios.patch(
+        config.back + '/book/video/' + this.$route.params._id,
+        data
+      ).then(response => {
+        if (this.videos) {
           this.videos.push(response.data.url);
         }
-      );
+      });
     },
     callAddPodcastUrl: function(data: object) {
       this.addPodcastUrl = false;
@@ -130,7 +150,9 @@ export default Vue.extend({
         config.back + '/book/podcast/' + this.$route.params._id,
         data
       ).then(response => {
-        this.podcasts.push(response.data.url);
+        if (this.podcasts) {
+          this.podcasts.push(response.data.url);
+        }
       });
     },
   },
@@ -138,39 +160,46 @@ export default Vue.extend({
     axios
       .get(config.back + '/book/id/' + this.$route.params._id, {})
       .then((response: any) => {
-        this.img = response.data.img;
         this.title = response.data.title;
+        this.img = response.data.img;
         this.videos = response.data.videos;
         this.podcasts = response.data.podcasts;
         this.author = response.data.author;
       });
   },
   data(): {
-    _id: string;
     img: string;
-    title: string;
-    loading: boolean;
-    videos: string[];
-    podcasts: string[];
-    panel: number;
     author: string;
+    title: string;
+    panel: number;
+    podcasts: string[];
+    videos: string[];
     addVideoUrl: boolean;
     addPodcastUrl: boolean;
     editBook: boolean;
+    editResumer: boolean;
+    youtubeRules: Record<string, Function>;
+    resumer: string;
   } {
     return {
       // eslint-disable-next-line vue/no-reserved-keys
-      _id: '',
+      resumer: '<h2>HW</h2> My bad <br/>',
+      editResumer: false,
       editBook: false,
       addVideoUrl: false,
       addPodcastUrl: false,
       panel: 0,
-      podcasts: [],
-      loading: true,
-      title: '',
-      videos: [],
-      author: '',
       img: '',
+      author: '',
+      title: '',
+      podcasts: [],
+      videos: [],
+      youtubeRules: {
+        url: (value: string) => {
+          const pattern = /^https:\/\/www.youtube.com\/embed\/.{11}$/;
+          return pattern.test(value) || "Ceci n'est pas une url youtube";
+        },
+      },
     };
   },
 });

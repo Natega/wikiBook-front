@@ -3,6 +3,8 @@ export default interface IBook {
   img: string;
   title: string;
   author: string;
+  description?: string;
+  subtitle?: string;
   videos?: string[];
   podcasts?: string[];
 }

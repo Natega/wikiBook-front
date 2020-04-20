@@ -4,7 +4,9 @@ import './registerServiceWorker';
 import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
+const CKEditor = require('@ckeditor/ckeditor5-vue');
 
+Vue.use(CKEditor);
 Vue.config.productionTip = false;
 
 Vue.directive('focus', {
