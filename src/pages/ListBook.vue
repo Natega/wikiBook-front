@@ -49,6 +49,7 @@ export default class ListBooks extends Vue {
     });
   }
   public goToBook(_id: string) {
+    console.log('tt');
     this.$router.push({ name: 'BookById', params: { _id } }); //@TODO maybe use compose api or utils
   }
   public deleteBook(_id: string) {
