@@ -52,6 +52,7 @@ export default class ListBooks extends Vue {
     this.$router.push({ name: 'BookById', params: { _id } }); //@TODO maybe use compose api or utils
   }
   public deleteBook(_id: string) {
+    console.log('gg');
     Axios.delete(config.back + '/book', { data: { _id } }).then(
       response => {
         this.books = this.books.filter(el => el._id !== response.data._id);
